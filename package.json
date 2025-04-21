@@ -57,12 +57,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kinleyrabgay/nsc.git"
+    "url": "git+https://github.com/ngfly/carousel.git"
   },
   "bugs": {
-    "url": "https://github.com/kinleyrabgay/nsc/issues"
+    "url": "https://github.com/ngfly/carousel/issues"
   },
-  "homepage": "https://github.com/kinleyrabgay/nsc#readme",
+  "homepage": "https://github.com/ngfly/carousel#readme",
   "files": [
     "dist"
   ],
