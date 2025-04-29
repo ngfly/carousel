@@ -698,7 +698,6 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     const navConfig = this.configs.navigationStyle;
     const buttonStyle = button === 'prev' ? navConfig?.prevButton || {} : navConfig?.nextButton || {};
     const style: Record<string, any> = {
-      zIndex: (buttonStyle as any).zIndex || '1000',
       position: 'absolute',
       pointerEvents: 'auto'
     };
@@ -781,6 +780,11 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
         Object.assign(styles, otherButtonConfig);
       } else {
         Object.assign(styles, buttonConfig);
+      }
+      
+      // Set the CSS variable for z-index if specified in config
+      if ((buttonConfig as any).zIndex) {
+        styles['--carousel-nav-z-index'] = (buttonConfig as any).zIndex;
       }
     }
 

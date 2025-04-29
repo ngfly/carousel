@@ -1,6 +1,6 @@
 {
   "name": "@ngfly/carousel",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A smooth, customizable carousel component for Angular 17+ applications",
   "scripts": {
     "ng": "ng",
@@ -9,7 +9,6 @@
     "build:prod": "npm run clean && ng build --configuration production",
     "optimize": "bash ./optimize.sh",
     "prepare:package": "cp README.md CHANGELOG.md LICENSE dist/@ngfly/carousel/",
-    "clean:package": "node scripts/clean-package.js",
     "publish:lib": "npm run build:prod && npm run optimize && cd dist/@ngfly/carousel && npm publish --access public",
     "clean": "rimraf dist",
     "lint": "ng lint"
