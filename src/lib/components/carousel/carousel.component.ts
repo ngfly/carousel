@@ -57,7 +57,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
 
   // Private state variables
   private currentTranslate = 0;
-  currentIndex = 0;
+  currentIndex = this.activeIndex || 0;
   private destroy$ = new Subject<void>();
   private autoplayInterval?: ReturnType<typeof setInterval>;
   private itemWidths: number[] = [];
@@ -98,6 +98,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
 
   ngOnInit(): void {
     this.filteredItems = this.slides || [];
+    this.currentIndex = this.activeIndex || 0;
     
     // Initialize navigation button visibility early
     const hasMultipleItems = this.filteredItems.length > 1;
