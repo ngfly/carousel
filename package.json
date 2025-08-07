@@ -1,6 +1,6 @@
 {
   "name": "@ngfly/carousel",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A smooth, customizable carousel component for Angular 17+ applications",
   "scripts": {
     "ng": "ng",
