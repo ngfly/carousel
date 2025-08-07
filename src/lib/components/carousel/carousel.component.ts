@@ -13,6 +13,8 @@ import {
   OnChanges,
   SimpleChanges,
   inject,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, fromEvent } from 'rxjs';
@@ -36,6 +38,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
 
   @Input() slides: any[] = [];
   @Input() configs: CarouselConfig = {};
+  @Input() activeIndex = 0;
+
+  @Output() onPrevClick = new EventEmitter<number>();
+  @Output() onNextClick = new EventEmitter<number>();
 
   /**
    * Template for rendering carousel slides & empty state
@@ -111,6 +117,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['slides']) {
       this.filteredItems = this.slides || [];
+      this.currentIndex = this.activeIndex;
 
       if (this.initialized) {
         setTimeout(() => {
@@ -540,6 +547,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     }
 
     this.checkOverflow();
+    this.onPrevClick.emit(this.currentIndex);
   }
 
   /**
@@ -571,6 +579,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     }
 
     this.checkOverflow();
+    this.onNextClick.emit(this.currentIndex);
   }
 
   private updateTranslatePosition(): void {
@@ -656,15 +665,21 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   getNavControlsClass(): string { return 'carousel__nav-controls'; }
 
   getNavControlsStyle(): Record<string, string> {
-    return {
+    const styles: Record<string, string> = {
       position: 'absolute',
       top: '0',
       left: '0',
       width: '100%',
       height: '100%',
       pointerEvents: 'none',
-      zIndex: '100',
     };
+    
+    // Apply custom z-index if specified in config
+    if (this.configs.navigationStyle?.zIndex) {
+      styles['--carousel-z-index'] = this.configs.navigationStyle.zIndex;
+    }
+    
+    return styles;
   }
 
   get prevIcon(): string {
@@ -782,9 +797,13 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
         Object.assign(styles, buttonConfig);
       }
       
-      // Set the CSS variable for z-index if specified in config
+      // Set the CSS variable for z-index if specified in button config
       if ((buttonConfig as any).zIndex) {
-        styles['--carousel-nav-z-index'] = (buttonConfig as any).zIndex;
+        styles['--carousel-z-index'] = (buttonConfig as any).zIndex;
+      }
+      // If no button-specific z-index, but global navigation z-index exists, use that
+      else if (this.configs.navigationStyle?.zIndex) {
+        styles['--carousel-z-index'] = this.configs.navigationStyle.zIndex;
       }
     }
 

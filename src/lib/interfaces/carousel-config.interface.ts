@@ -41,6 +41,7 @@ export interface NavigationStyle {
   buttonShape?: NavButtonShape;
   buttonPosition?: NavButtonPosition;
   controlsPosition?: NavControlsPosition;
+  zIndex?: string;
   icons?: {
     next?: string;
     prev?: string;

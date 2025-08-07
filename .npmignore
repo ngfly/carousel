@@ -62,12 +62,9 @@ projects/
 
 # Source files
 src/
-projects/
 scripts/
 
 # Config files
-*.config.js
-*.conf.js
 angular.json
 tsconfig.json
 tsconfig.lib.json

@@ -15,7 +15,7 @@
   --carousel-nav-item-gap: 24px;
   --carousel-indicator-active-color: #333;
   --carousel-indicator-inactive-color: #ccc;
-  --carousel-nav-z-index: 101;
+  --carousel-z-index: 100;
   
   position: relative;
   overflow: hidden;
@@ -153,7 +153,7 @@
     position: absolute;
     display: flex;
     gap: 0;
-    z-index: 100;
+    z-index: var(--carousel-z-index);
     pointer-events: none;
     padding: 0;
     margin: 0;
@@ -174,7 +174,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: var(--carousel-nav-z-index);
+    z-index: var(--carousel-z-index);
     position: absolute;
     outline: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
