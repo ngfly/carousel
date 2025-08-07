@@ -117,7 +117,6 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['slides']) {
       this.filteredItems = this.slides || [];
-      this.currentIndex = this.activeIndex;
 
       if (this.initialized) {
         setTimeout(() => {
@@ -127,6 +126,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
           this.cdr.detectChanges();
         });
       }
+    }
+
+    if (changes['activeIndex']) {
+      this.goToSlide(this.activeIndex);
     }
 
     if (changes['configs'] && this.initialized) {
