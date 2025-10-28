@@ -19,8 +19,14 @@ import {
 import { CommonModule } from '@angular/common';
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
-import { CarouselConfig, ScrollSize } from '../../interfaces/carousel-config.interface';
-import { CarouselService, CAROUSEL_DEFAULTS } from '../../services/carousel.service';
+import {
+  CarouselConfig,
+  ScrollSize,
+} from '../../interfaces/carousel-config.interface';
+import {
+  CarouselService,
+  CAROUSEL_DEFAULTS,
+} from '../../services/carousel.service';
 import { createTranslation } from '../../utils/animation';
 
 @Component({
@@ -29,9 +35,11 @@ import { createTranslation } from '../../utils/animation';
   imports: [CommonModule],
   templateUrl: './carousel.component.html',
   styleUrls: ['./carousel.component.scss'],
-  providers: [CarouselService]
+  providers: [CarouselService],
 })
-export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+export class CarouselComponent
+  implements OnInit, AfterViewInit, OnDestroy, OnChanges
+{
   private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly ngZone: NgZone = inject(NgZone);
   private readonly carouselService: CarouselService = inject(CarouselService);
@@ -99,18 +107,19 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   ngOnInit(): void {
     this.filteredItems = this.slides || [];
     this.currentIndex = this.activeIndex || 0;
-    
+
     // Initialize navigation button visibility early
     const hasMultipleItems = this.filteredItems.length > 1;
     if (hasMultipleItems) {
       this.showPrevButton = true;
       this.showNextButton = true;
     }
-    
+
     if (this.configs.emptyState) {
       this.emptyStateText = this.configs.emptyState.text || this.emptyStateText;
       this.emptyStateIcon = this.configs.emptyState.icon || this.emptyStateIcon;
-      this.emptyStateTextColor = this.configs.emptyState.textColor || this.emptyStateTextColor;
+      this.emptyStateTextColor =
+        this.configs.emptyState.textColor || this.emptyStateTextColor;
       this.showEmptyStateIcon = this.configs.emptyState.hideIcon ? false : true;
     }
   }
@@ -149,8 +158,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
 
     if (!this.configs.autoplay) return;
 
-    const delay = this.carouselService.parseTimeToMs(this.configs.autoplayDelay || '3000ms');
-    
+    const delay = this.carouselService.parseTimeToMs(
+      this.configs.autoplayDelay || '3000ms'
+    );
+
     this.autoplayInterval = setInterval(() => {
       const track = this.trackElement?.nativeElement;
       const wrapper = this.wrapperElement?.nativeElement;
@@ -167,7 +178,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
           this.clearAutoplayInterval();
           return;
         }
-        
+
         this.currentTranslate = 0;
         this.currentIndex = 0;
       } else {
@@ -194,20 +205,20 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
           this.setupResizeListener();
           this.setupIntersectionObserver();
           this.setupResizeObserver();
-          
+
           this.updateContainerDimensions();
           this.calculateItemDimensions();
           this.checkOverflow();
           this.initialized = true;
-          
+
           // Ensure changes are applied before next change detection cycle
           this.cdr.detectChanges();
-          
+
           // Setup autoplay after initialization to avoid change detection issues
           setTimeout(() => {
             this.setupAutoplay();
           });
-    
+
           // Force another update after layout is complete
           setTimeout(() => {
             this.updateContainerDimensions();
@@ -254,13 +265,19 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     this.filteredItems = [];
   }
 
-  get isVertical(): boolean { return this.configs.orientation === 'vertical'; }
+  get isVertical(): boolean {
+    return this.configs.orientation === 'vertical';
+  }
 
   get containerStyles(): Record<string, string> {
     const styles = this.configs.containerStyle || {};
 
-    if (!('width' in styles)) { styles['width'] = this.configs.containerWidth || '100%'; }
-    if (!('height' in styles)) { styles['height'] = this.configs.containerHeight || 'auto'; }
+    if (!('width' in styles)) {
+      styles['width'] = this.configs.containerWidth || '100%';
+    }
+    if (!('height' in styles)) {
+      styles['height'] = this.configs.containerHeight || 'auto';
+    }
 
     return styles;
   }
@@ -402,12 +419,14 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
         // For vertical carousels
         const trackHeight = track.offsetHeight;
         const wrapperHeight = wrapper.offsetHeight;
-        this.showNextButton = trackHeight - this.currentTranslate > wrapperHeight + 1;
+        this.showNextButton =
+          trackHeight - this.currentTranslate > wrapperHeight + 1;
       } else {
         // For horizontal carousels
         const trackWidth = track.offsetWidth;
         const wrapperWidth = wrapper.offsetWidth;
-        this.showNextButton = trackWidth - this.currentTranslate > wrapperWidth + 1;
+        this.showNextButton =
+          trackWidth - this.currentTranslate > wrapperWidth + 1;
       }
     }
 
@@ -484,7 +503,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
         const marginBottom = parseInt(style.marginBottom || '0', 10);
         return height + marginTop + marginBottom;
       });
-      
+
       this.cdr.detectChanges();
     }, 50); // Small delay to ensure images are loaded
   }
@@ -579,7 +598,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       const maxTranslate = this.isVertical
         ? track.offsetHeight - wrapper.offsetHeight
         : track.offsetWidth - wrapper.offsetWidth;
-      this.currentTranslate = Math.min(maxTranslate, this.currentTranslate + scrollAmount);
+      this.currentTranslate = Math.min(
+        maxTranslate,
+        this.currentTranslate + scrollAmount
+      );
     }
 
     this.checkOverflow();
@@ -592,7 +614,9 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       return;
     }
 
-    const gap = this.configs.itemGap ? parseInt(this.configs.itemGap.replace('px', ''), 10) : 0;
+    const gap = this.configs.itemGap
+      ? parseInt(this.configs.itemGap.replace('px', ''), 10)
+      : 0;
     let position = 0;
 
     // Calculate cumulative position based on item dimensions
@@ -626,7 +650,11 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     }
 
     if (this.configs.itemHeight) {
-      if ((this.configs.itemHeight === '100%' || parseInt(this.configs.itemHeight, 10) === this.containerHeight) && this.containerHeight > 0) {
+      if (
+        (this.configs.itemHeight === '100%' ||
+          parseInt(this.configs.itemHeight, 10) === this.containerHeight) &&
+        this.containerHeight > 0
+      ) {
         styles['height'] = this.containerHeight + 'px';
         styles['minHeight'] = this.containerHeight + 'px';
         styles['maxHeight'] = '100%';
@@ -651,22 +679,37 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     return styles;
   }
 
-  get contentPadding(): string { return this.configs.contentPadding || CAROUSEL_DEFAULTS.CONTENT_PADDING; }
-  get animationDuration(): string { return (this.configs.animationDuration || CAROUSEL_DEFAULTS.ANIMATION_DURATION); }
-  get animationTiming(): string { return this.configs.animationTiming || CAROUSEL_DEFAULTS.ANIMATION_TIMING; }
-  get showNavigation(): boolean { return this.configs.showNavigation ?? true; }
+  get contentPadding(): string {
+    return this.configs.contentPadding || CAROUSEL_DEFAULTS.CONTENT_PADDING;
+  }
+  get animationDuration(): string {
+    return (
+      this.configs.animationDuration || CAROUSEL_DEFAULTS.ANIMATION_DURATION
+    );
+  }
+  get animationTiming(): string {
+    return this.configs.animationTiming || CAROUSEL_DEFAULTS.ANIMATION_TIMING;
+  }
+  get showNavigation(): boolean {
+    return this.configs.showNavigation ?? true;
+  }
 
   getEmptyStateContainerStyle(): Record<string, string> {
     return {
       width: '100%',
       boxSizing: 'border-box',
       borderRadius: 'inherit',
-      backgroundColor: this.configs.emptyState?.backgroundColor || 'transparent',
+      backgroundColor:
+        this.configs.emptyState?.backgroundColor || 'transparent',
     };
   }
 
-  hasItems(): boolean { return this.filteredItems?.length > 0; }
-  getNavControlsClass(): string { return 'carousel__nav-controls'; }
+  hasItems(): boolean {
+    return this.filteredItems?.length > 0;
+  }
+  getNavControlsClass(): string {
+    return 'carousel__nav-controls';
+  }
 
   getNavControlsStyle(): Record<string, string> {
     const styles: Record<string, string> = {
@@ -677,12 +720,12 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       height: '100%',
       pointerEvents: 'none',
     };
-    
+
     // Apply custom z-index if specified in config
     if (this.configs.navigationStyle?.zIndex) {
       styles['--carousel-z-index'] = this.configs.navigationStyle.zIndex;
     }
-    
+
     return styles;
   }
 
@@ -715,14 +758,17 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
    */
   private getButtonPositionStyle(button: 'prev' | 'next'): Record<string, any> {
     const navConfig = this.configs.navigationStyle;
-    const buttonStyle = button === 'prev' ? navConfig?.prevButton || {} : navConfig?.nextButton || {};
+    const buttonStyle =
+      button === 'prev'
+        ? navConfig?.prevButton || {}
+        : navConfig?.nextButton || {};
     const style: Record<string, any> = {
       position: 'absolute',
-      pointerEvents: 'auto'
+      pointerEvents: 'auto',
     };
 
     // Handle positioning properties
-    ['top', 'bottom', 'left', 'right'].forEach(prop => {
+    ['top', 'bottom', 'left', 'right'].forEach((prop) => {
       const value = (buttonStyle as any)[prop];
       if (value !== undefined) {
         style[prop] = value === 0 || value === '0' ? '0px' : value;
@@ -732,16 +778,16 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     // Handle transforms based on positioning
     const transformMap = {
       'left=50%': 'translateX(-50%)',
-      'right=50%': 'translateX(50%)', 
+      'right=50%': 'translateX(50%)',
       'top=50%': 'translateY(-50%)',
-      'bottom=50%': 'translateY(50%)'
+      'bottom=50%': 'translateY(50%)',
     };
 
     // Find matching transform
     for (const [position, transform] of Object.entries(transformMap)) {
       const [prop, value] = position.split('=');
       if ((buttonStyle as any)[prop] === value) {
-        style['transform'] = (buttonStyle as any).transform 
+        style['transform'] = (buttonStyle as any).transform
           ? `${(buttonStyle as any).transform} ${transform}`
           : transform;
         break;
@@ -754,8 +800,8 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     }
 
     // Apply default positioning if none specified
-    const hasPosition = ['top', 'bottom', 'left', 'right'].some(prop => 
-      (buttonStyle as any)[prop] !== undefined
+    const hasPosition = ['top', 'bottom', 'left', 'right'].some(
+      (prop) => (buttonStyle as any)[prop] !== undefined
     );
 
     if (!hasPosition) {
@@ -777,7 +823,9 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
    * Get full styles for navigation buttons
    * @param buttonType - Type of button ('prev' or 'next')
    */
-  private getButtonFullStyles(buttonType: 'prev' | 'next'): Record<string, any> {
+  private getButtonFullStyles(
+    buttonType: 'prev' | 'next'
+  ): Record<string, any> {
     // Get base styles including shape styles
     const styles = {
       ...this.carouselService.getButtonShapeStyles(
@@ -795,12 +843,15 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       // Apply custom button styles but preserve shape styles
       const buttonShape = this.configs.navigationStyle?.buttonShape;
       if (buttonShape) {
-        const { borderRadius, ...otherButtonConfig } = buttonConfig as Record<string, any>;
+        const { borderRadius, ...otherButtonConfig } = buttonConfig as Record<
+          string,
+          any
+        >;
         Object.assign(styles, otherButtonConfig);
       } else {
         Object.assign(styles, buttonConfig);
       }
-      
+
       // Set the CSS variable for z-index if specified in button config
       if ((buttonConfig as any).zIndex) {
         styles['--carousel-z-index'] = (buttonConfig as any).zIndex;
@@ -814,8 +865,12 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     return styles;
   }
 
-  getPrevButtonFullStyles(): Record<string, any> { return this.getButtonFullStyles('prev'); }
-  getNextButtonFullStyles(): Record<string, any> { return this.getButtonFullStyles('next'); }
+  getPrevButtonFullStyles(): Record<string, any> {
+    return this.getButtonFullStyles('prev');
+  }
+  getNextButtonFullStyles(): Record<string, any> {
+    return this.getButtonFullStyles('next');
+  }
 
   getPrevIndex(activeIndex: number): number {
     const itemsCount = this.filteredItems?.length || 0;
@@ -824,8 +879,8 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     return activeIndex > 0
       ? activeIndex - 1
       : this.configs.loop
-        ? itemsCount - 1
-        : activeIndex;
+      ? itemsCount - 1
+      : activeIndex;
   }
 
   goToPrevSlide(): void {
@@ -837,7 +892,11 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     }
   }
 
-  getIndicatorContainerStyles(): Record<string, string> { return this.carouselService.getIndicatorContainerStyles(this.configs.indicatorStyle); }
+  getIndicatorContainerStyles(): Record<string, string> {
+    return this.carouselService.getIndicatorContainerStyles(
+      this.configs.indicatorStyle
+    );
+  }
 
   /**
    * Get styles for an individual indicator
@@ -845,7 +904,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
    */
   getIndicatorItemStyles(index: number): Record<string, string> {
     const isActive = index === this.currentIndex;
-    return this.carouselService.getIndicatorStyles(this.configs.indicatorStyle, isActive);
+    return this.carouselService.getIndicatorStyles(
+      this.configs.indicatorStyle,
+      isActive
+    );
   }
 
   /**
@@ -853,8 +915,13 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
    * @param index Target slide index
    */
   goToSlide(index: number): void {
-    if (index === this.currentIndex || index < 0 || index >= this.filteredItems.length) return;
-    
+    if (
+      index === this.currentIndex ||
+      index < 0 ||
+      index >= this.filteredItems.length
+    )
+      return;
+
     this.currentIndex = index;
 
     if (this.configs.singleItemMode) {
@@ -865,21 +932,21 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
 
     const track = this.trackElement?.nativeElement;
     const wrapper = this.wrapperElement?.nativeElement;
-    
+
     if (!track || !wrapper) return;
-    
+
     const gap = parseInt(this.configs.itemGap?.replace('px', '') || '0', 10);
     const dimensions = this.isVertical ? this.itemHeights : this.itemWidths;
-    
+
     // Calculate cumulative position up to target index
     const position = dimensions
       .slice(0, index)
       .reduce((sum, size) => sum + (size || 0) + gap, 0);
-    
+
     const maxTranslate = this.isVertical
-      ? track.offsetHeight - wrapper.offsetHeight 
+      ? track.offsetHeight - wrapper.offsetHeight
       : track.offsetWidth - wrapper.offsetWidth;
-      
+
     this.currentTranslate = Math.min(maxTranslate, Math.max(0, position));
     this.checkOverflow();
   }
@@ -887,5 +954,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   /**
    * Whether to show indicators
    */
-  get showIndicators(): boolean { return this.configs.showIndicators ?? false; }
+  get showIndicators(): boolean {
+    return this.configs.showIndicators ?? false;
+  }
 }
